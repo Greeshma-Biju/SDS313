@@ -1,0 +1,127 @@
+---
+title: "Project 1 - Video Game Review Scores"
+author: "Greeshma Biju"
+date: "09/22/2023"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(fig.height=5, fig.width=8, warning=FALSE, tidy=TRUE, tidy.opts=list(width.cutoff=60))
+```
+
+```{r, echo=FALSE}
+setwd("/Users/greeshmabiju/Downloads")
+videogames <- read.csv("Project1_videogames.csv")
+```
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(knitr)
+```
+
+# **Introduction**
+
+The **videogames.csv** dataset contains data regarding the sales and playtime of nearly one thousand video games released between 2004 and 2008. The playtime information was collected from crowd-sourced data on “How Long to Beat”. This data was collected by Dr. Joe Cox as he utilized a unique data set of individual video game titles to estimate the effect of certain variables on the likelihood of a video game becoming a block-buster title.
+
+The variables in this dataset include:
+
+* Title: The full title of this game
+* Publisher: The publisher who created this game
+* Genre: The genre that this game belongs to
+* Year: The year that this game was released
+* Rating: The ESRB rating for this game, either E (for Everyone), T (for Teen), or M (for Mature)
+* Console: The name of the console that this particular game was released for
+  + The dataset contains multiple copies of the same game, released for different consoles
+* MaxPlayers: The maximum number of players that can play this game
+* AvgHoursToFinish: The mean time that players reported completing the game, in hours
+* Sales: The total sales made on this game, measured in millions of dollars
+* ReviewScore: A typical review score for this game, out of 100.
+
+The outcome variable that we will investigate is the **Review Score** variable. The predictor variables we will be investigating are the **Rating**, **Average Hours to Finish**, and **Sales** variables. 
+
+Image of Video Game:
+
+![](/Users/greeshmabiju/Downloads/VGPicture.png)
+
+**Citation:**
+
+"The 21 Best Video Games to Play in 2023." Good Housekeeping, 16 Jan. 2022, www.goodhousekeeping.com/life/entertainment/g30910862/best-video-games/. Accessed 19 Sept. 2023.
+
+# **Distribution of Video Game Review Scores**
+
+```{r, echo=FALSE, message=FALSE}
+videogamesgg <- ggplot(videogames)
+
+videogamesgg + geom_histogram(aes(x=ReviewScore), color='darkseagreen4', fill='darkseagreen1') + labs(title='Distribution of Video Game Review Scores',x='Review Scores', y= 'Frequency') + theme_classic()
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+round(mean(videogames$ReviewScore),2)
+round(median(videogames$ReviewScore),2)
+round(sd(videogames$ReviewScore),2)
+```
+
+This histogram displays the frequency of video game review scores from 0 to 100. On average, the review scores from 2004 to 2008 was `r round(mean(videogames$ReviewScore),2)`, with a standard deviation of `r round(sd(videogames$ReviewScore),2)`. The median was `r round(median(videogames$ReviewScore),2)`. The histogram of the frequency of video game review scores is skewed to the left (negatively skewed), indicating that the mean is less than the median and that the outliers of the distribution curve are further out towards the left. 
+
+# **Video Game Rating and Review Score**
+
+```{r, echo=FALSE}
+
+videogamesgg + geom_boxplot(aes(x=Rating, y=ReviewScore, fill=Rating)) + labs(title='Video Game Rating and Review Score',x='Rating',y='Review Score') +
+  scale_fill_manual(values = c('E' = 'palevioletred1', 'M' = 'powderblue', 'T' = 'mediumaquamarine')) + theme_minimal()
+```
+
+```{r, echo=FALSE, eval=FALSE}
+aggregate(ReviewScore ~ Rating, data = videogames, mean)
+aggregate(ReviewScore ~ Rating, data = videogames, median)
+aggregate(ReviewScore ~ Rating, data = videogames, sd)
+```
+
+This boxplot displays the bivariate relationship between video game ratings and review scores. There are three categories of ratings: E (Everyone), T (Teen), and M (Mature). From the boxplot, we can see that the median for video games that had a rating for everyone and the median for the video games that had a rating for teens had the same median review score of 72, with mature ratings having a lower median review score of 70. The boxplot also reveals how ratings of video games for everyone and teens had outliers present, while the mature rated video games did not have any outliers. The video games that were rated for everyone had the highest average review score of 70.27, with teen ratings close behind with an average of 68.79, and mature audience having the lowest average review score of 68.79. The video games that were rated for everyone also held the highest standard deviation of 13.31 while mature rated games had the lowest standard deviation of 12.29.
+
+# **Average Hours to Finish and Review Score**
+
+```{r, echo=FALSE}
+
+videogamesgg + geom_point(aes(x=AvgHoursToFinish, y=ReviewScore), col='darkorchid1') + labs(title='Average Hours to Finish Video Game and Review Score',x='Average Hours to Finish the Game',y='Review Score')
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+round(cor(videogames$AvgHoursToFinish,videogames$ReviewScore),2)
+```
+
+This graph displays the bivariate relationship between the average number of hours it takes for a player to complete a video game and review score. The correlation between the average hours to finish the game and review score is `r round(cor(videogames$AvgHoursToFinish,videogames$ReviewScore),2)`, indicating that there is a weak positive correlation between the two variables. Although the correlation coefficient reveals that there is a positive trend between the two variables, the weak relationship does not give enough support to indicate the two variables are related to one another.  
+
+# **Sales and Review Score**
+
+```{r, echo=FALSE}
+
+videogamesgg + geom_point(aes(x=Sales, y=ReviewScore), col='slateblue1') + labs(title='Video Game Sales and Review Score',x='Sales (millions of $)',y='Review Score')
+
+```
+
+```{r, echo=FALSE, eval=FALSE}
+round(cor(videogames$Sales,videogames$ReviewScore),2)
+```
+
+This graph displays the bivariate relationship between the video game sales in millions of dollars and review score. The correlation between video game sales and review score is `r round(cor(videogames$Sales,videogames$ReviewScore),2)`, indicating that there is a weak positive correlation between the two variables. Although the correlation coefficient reveals that there is a positive trend between the two variables, the weak relationship does not give enough support to indicate the two variables are related to one another.  
+
+# **Conclusion**
+
+Given this data set of video games released between 2004 and 2008, we were able to analyze the outcome variable of review scores and their relationship with the rating, average hours to finish, and sales variables. Looking at the distribution of video game review scores alone, we can wee how the histogram is skewed to the left and how a majority of the review score values fall between 60 and 90. When analyzing the relationship between video game rating and review score, we can see how video games that were rated for everyone had the highest average review score of 70.27 while video games that were rated mature had the lowest average review score of 68.79. When analyzing the relationship between the average hours to finish the video game and review score, we can see how there is a weak positive correlation between the two variables as it contained a correlation coefficient of 0.21. Lastly, when analyzing the relationship between video game sales and review score, we can see how there is a weak positive correlation between the two variables as it contained a correlation coefficient of 0.3. Suggested areas for future research would be to analyze the relationship between video game review scores and how many levels a particular video game has. I would like to analyze if there is a relationship between the amount of levels a game has and its review score, as video games that allow you to unlock new levels become enticing to its audience and cause them to become more enjoyable. Another area for future research would be to analyze if there is a relationship between review scores and the particular publisher of the video game. Many individuals are attracted to the name brand of a video game as some publishers are most known for releasing popular video games, and I would like to see if there is any relationship between the two regarding this data set. 
+
+**References:**
+
+Cox, Joe. “What Makes a Blockbuster Video Game? An Empirical Analysis of US Sales Data.” University of Portsmouth, John Wiley and Sons Ltd, 26 July 2023, researchportal.port.ac.uk/en/publications/what-makes-a-blockbuster-video-game-an-empirical-analysis-of-us-s. 
+
+“Video Games CSV File.” CORGIS Datasets Project, corgis-edu.github.io/corgis/csv/video_games/. Accessed 19 Sept. 2023. 
+
+What Makes a Blockbuster Video Game? An ... - Wiley Online Library, onlinelibrary.wiley.com/doi/10.1002/mde.2608. Accessed 20 Sept. 2023. 
+
