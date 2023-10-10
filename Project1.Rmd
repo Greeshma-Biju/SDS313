@@ -62,6 +62,7 @@ videogamesgg + geom_histogram(aes(x=ReviewScore), color='darkseagreen4', fill='d
 
 
 ```{r, echo=FALSE, eval=FALSE}
+# find mean median, median, and standard deviation of video game review scores
 round(mean(videogames$ReviewScore),2)
 round(median(videogames$ReviewScore),2)
 round(sd(videogames$ReviewScore),2)
